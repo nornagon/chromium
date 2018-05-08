@@ -102,22 +102,28 @@ void ScopedClipboardWriter::WriteImage(const SkBitmap& bitmap) {
   objects_[Clipboard::CBF_SMBITMAP] = parameters;
 }
 
-void ScopedClipboardWriter::WritePickledData(
-    const base::Pickle& pickle,
-    const Clipboard::FormatType& format) {
+void ScopedClipboardWriter::WriteData(const char* data,
+                                      int size,
+                                      const Clipboard::FormatType& format) {
   std::string format_string = format.Serialize();
   Clipboard::ObjectMapParam format_parameter(format_string.begin(),
                                              format_string.end());
   Clipboard::ObjectMapParam data_parameter;
 
-  data_parameter.resize(pickle.size());
-  memcpy(const_cast<char*>(&data_parameter.front()),
-         pickle.data(), pickle.size());
+  data_parameter.resize(size);
+  memcpy(const_cast<char*>(&data_parameter.front()), data, size);
 
   Clipboard::ObjectMapParams parameters;
   parameters.push_back(format_parameter);
   parameters.push_back(data_parameter);
   objects_[Clipboard::CBF_DATA] = parameters;
+}
+
+void ScopedClipboardWriter::WritePickledData(
+    const base::Pickle& pickle,
+    const Clipboard::FormatType& format) {
+  WriteData(reinterpret_cast<const char*>(pickle.data()), pickle.size(),
+            format);
 }
 
 void ScopedClipboardWriter::Reset() {

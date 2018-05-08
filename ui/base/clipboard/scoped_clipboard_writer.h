@@ -61,6 +61,11 @@ class UI_BASE_EXPORT ScopedClipboardWriter {
   // Used by WebKit to determine whether WebKit wrote the clipboard last
   void WriteWebSmartPaste();
 
+  // Adds arbitrary data to clipboard.
+  void WriteData(const char* data,
+                 int size,
+                 const Clipboard::FormatType& format);
+
   // Adds arbitrary pickled data to clipboard.
   void WritePickledData(const base::Pickle& pickle,
                         const Clipboard::FormatType& format);
