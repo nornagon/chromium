@@ -181,6 +181,11 @@ class CONTENT_EXPORT RenderWidgetHostViewChildFrame
   void ReclaimResources(
       const std::vector<viz::ReturnedResource>& resources) override;
   void OnBeginFramePausedChanged(bool paused) override;
+  void WillDrawSurface(const viz::LocalSurfaceId& local_surface_id,
+                       const gfx::Rect& damage_rect);
+  void BeginFrameSubscription(
+      std::unique_ptr<RenderWidgetHostViewFrameSubscriber> subscriber) override;
+  void EndFrameSubscription() override;
 
   // viz::HostFrameSinkClient implementation.
   void OnFirstSurfaceActivation(const viz::SurfaceInfo& surface_info) override;
@@ -300,6 +305,8 @@ class CONTENT_EXPORT RenderWidgetHostViewChildFrame
 
   // The surface client ID of the parent RenderWidgetHostView.  0 if none.
   viz::FrameSinkId parent_frame_sink_id_;
+
+  std::unique_ptr<RenderWidgetHostViewFrameSubscriber> frame_subscriber_;
 
   bool has_frame_ = false;
   viz::mojom::CompositorFrameSinkClient* renderer_compositor_frame_sink_ =

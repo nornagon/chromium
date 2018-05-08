@@ -32,12 +32,14 @@
 #include "content/browser/renderer_host/render_widget_host_impl.h"
 #include "content/browser/renderer_host/render_widget_host_input_event_router.h"
 #include "content/browser/renderer_host/render_widget_host_view_event_handler.h"
+#include "content/browser/renderer_host/render_widget_host_view_frame_subscriber.h"
 #include "content/browser/renderer_host/text_input_manager.h"
 #include "content/common/text_input_state.h"
 #include "content/common/view_messages.h"
 #include "content/public/browser/guest_mode.h"
 #include "content/public/browser/render_process_host.h"
 #include "gpu/ipc/common/gpu_messages.h"
+#include "media/base/video_frame.h"
 #include "services/service_manager/runner/common/client_util.h"
 #include "third_party/WebKit/public/platform/WebTouchEvent.h"
 #include "ui/gfx/geometry/size_conversions.h"
@@ -857,6 +859,30 @@ void RenderWidgetHostViewChildFrame::OnBeginFramePausedChanged(bool paused) {
     renderer_compositor_frame_sink_->OnBeginFramePausedChanged(paused);
 }
 
+void RenderWidgetHostViewChildFrame::WillDrawSurface(
+    const viz::LocalSurfaceId& local_surface_id,
+    const gfx::Rect& damage_rect) {
+  if (local_surface_id != last_received_local_surface_id_ ||
+      damage_rect.IsEmpty() ||
+      !frame_subscriber_.get())
+    return;
+
+  base::TimeTicks present_time;
+  scoped_refptr<media::VideoFrame> frame;
+  RenderWidgetHostViewFrameSubscriber::DeliverFrameCallback callback;
+  frame_subscriber_->ShouldCaptureFrame(damage_rect, present_time, &frame,
+                                        &callback);
+}
+
+void RenderWidgetHostViewChildFrame::BeginFrameSubscription(
+    std::unique_ptr<RenderWidgetHostViewFrameSubscriber> subscriber) {
+  frame_subscriber_ = std::move(subscriber);
+}
+
+void RenderWidgetHostViewChildFrame::EndFrameSubscription() {
+  frame_subscriber_.reset();
+}
+
 void RenderWidgetHostViewChildFrame::OnFirstSurfaceActivation(
     const viz::SurfaceInfo& surface_info) {
   viz::SurfaceSequence sequence(frame_sink_id_, next_surface_sequence_++);
@@ -952,6 +978,8 @@ void RenderWidgetHostViewChildFrame::CreateCompositorFrameSinkSupport() {
   constexpr bool needs_sync_points = true;
   support_ = GetHostFrameSinkManager()->CreateCompositorFrameSinkSupport(
       this, frame_sink_id_, is_root, needs_sync_points);
+  support_->SetWillDrawSurfaceCallback(base::BindRepeating(
+      &RenderWidgetHostViewChildFrame::WillDrawSurface, AsWeakPtr()));
   if (parent_frame_sink_id_.is_valid()) {
     GetHostFrameSinkManager()->RegisterFrameSinkHierarchy(parent_frame_sink_id_,
                                                           frame_sink_id_);
