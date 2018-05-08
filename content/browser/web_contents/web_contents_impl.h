@@ -540,7 +540,8 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
       SiteInstance* source_site_instance) const override;
   void EnsureOpenerProxiesExist(RenderFrameHost* source_rfh) override;
   std::unique_ptr<WebUIImpl> CreateWebUIForRenderFrameHost(
-      const GURL& url) override;
+      const GURL& url,
+      const std::string& frame_name) override;
   void SetFocusedFrame(FrameTreeNode* node, SiteInstance* source) override;
   RenderFrameHost* GetFocusedFrameIncludingInnerWebContents() override;
   void OnFocusedElementChangedInFrame(

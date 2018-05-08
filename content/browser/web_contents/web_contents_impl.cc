@@ -768,6 +768,25 @@ RenderFrameHostManager* WebContentsImpl::GetRenderManagerForTesting() {
   return GetRenderManager();
 }
 
+void SendMessageToFrameTreeWebUIs(RenderFrameHostImpl* parent_frame_host,
+                                  const IPC::Message& message,
+                                  int& dispatch_count) {
+  // Get the web ui or the pending one if it's not yet commited.
+  WebUIImpl* web_ui = parent_frame_host->web_ui()
+      ? parent_frame_host->web_ui()
+      : parent_frame_host->pending_web_ui();
+  if (web_ui && web_ui->OnMessageReceived(message, parent_frame_host)) {
+    ++dispatch_count;
+  }
+
+  size_t child_count = parent_frame_host->frame_tree_node()->child_count();
+  for (size_t i = 0; i < child_count; ++i) {
+    RenderFrameHostImpl* sub_frame_host =
+        parent_frame_host->frame_tree_node()->child_at(i)->current_frame_host();
+    SendMessageToFrameTreeWebUIs(sub_frame_host, message, dispatch_count);
+  }
+}
+
 bool WebContentsImpl::OnMessageReceived(RenderViewHostImpl* render_view_host,
                                         const IPC::Message& message) {
   for (auto& observer : observers_) {
@@ -809,9 +828,10 @@ bool WebContentsImpl::OnMessageReceived(RenderViewHostImpl* render_view_host,
 
 bool WebContentsImpl::OnMessageReceived(RenderFrameHostImpl* render_frame_host,
                                         const IPC::Message& message) {
-  {
-    WebUIImpl* web_ui = render_frame_host->web_ui();
-    if (web_ui && web_ui->OnMessageReceived(message, render_frame_host))
+  int dispatch_count = 0;
+  if (render_frame_host) {
+    SendMessageToFrameTreeWebUIs(render_frame_host, message, dispatch_count);
+    if (dispatch_count > 0)
       return true;
   }
 
@@ -5505,8 +5525,9 @@ NavigationControllerImpl& WebContentsImpl::GetControllerForRenderManager() {
 }
 
 std::unique_ptr<WebUIImpl> WebContentsImpl::CreateWebUIForRenderFrameHost(
-    const GURL& url) {
-  return CreateWebUI(url);
+    const GURL& url,
+    const std::string& frame_name) {
+  return CreateWebUI(url/*, frame_name*/);
 }
 
 NavigationEntry*

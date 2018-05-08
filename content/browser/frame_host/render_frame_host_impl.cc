@@ -19,6 +19,7 @@
 #include "base/metrics/user_metrics.h"
 #include "base/process/kill.h"
 #include "base/time/time.h"
+#include "base/unguessable_token.h"
 #include "build/build_config.h"
 #include "cc/base/switches.h"
 #include "content/browser/accessibility/browser_accessibility_manager.h"
@@ -3580,8 +3581,23 @@ bool RenderFrameHostImpl::UpdatePendingWebUI(const GURL& dest_url,
       DCHECK(web_ui_);
       should_reuse_web_ui_ = true;
     } else {
+      // Give the frame a name if it does not already have one.
+      // The reason is web ui code base the frame look up on the frame name.
+      std::string frame_name = GetFrameName();
+      if (frame_name.empty() && !frame_tree_node_->IsMainFrame()) {
+        frame_name = base::StringPrintf("frame_%i", frame_tree_node_->frame_tree_node_id());
+        frame_tree_node_->SetFrameName(
+            frame_name, frame_name + base::UnguessableToken::Create().ToString());
+      }
+
+      // If the web ui is in subframes, the parent frame bindings does not have the web ui binding,
+      // so we reset the bindings for the subframes.
+      if (!frame_tree_node_->IsMainFrame() && new_web_ui_type != WebUI::kNoWebUI) {
+        entry_bindings = NavigationEntryImpl::kInvalidBindings;
+      }
+
       // Otherwise create a new pending WebUI.
-      pending_web_ui_ = delegate_->CreateWebUIForRenderFrameHost(dest_url);
+      pending_web_ui_ = delegate_->CreateWebUIForRenderFrameHost(dest_url, frame_name);
       DCHECK(pending_web_ui_);
       pending_web_ui_type_ = new_web_ui_type;
 

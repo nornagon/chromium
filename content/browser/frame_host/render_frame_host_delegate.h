@@ -260,7 +260,8 @@ class CONTENT_EXPORT RenderFrameHostDelegate {
   // Creates a WebUI object for a frame navigating to |url|. If no WebUI
   // applies, returns null.
   virtual std::unique_ptr<WebUIImpl> CreateWebUIForRenderFrameHost(
-      const GURL& url);
+      const GURL& url,
+      const std::string& frame_name);
 
   // Called by |frame| to notify that it has received an update on focused
   // element. |bounds_in_root_view| is the rectangle containing the element that

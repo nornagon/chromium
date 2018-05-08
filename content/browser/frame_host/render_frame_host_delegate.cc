@@ -97,7 +97,9 @@ RenderFrameHostDelegate::GetFocusedFrameIncludingInnerWebContents() {
 }
 
 std::unique_ptr<WebUIImpl>
-RenderFrameHostDelegate::CreateWebUIForRenderFrameHost(const GURL& url) {
+RenderFrameHostDelegate::CreateWebUIForRenderFrameHost(
+    const GURL& url,
+    const std::string& frame_name) {
   return nullptr;
 }
 
