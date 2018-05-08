@@ -9,7 +9,7 @@ if (is_android) {
   import("//build/config/android/rules.gni")
 }
 
-source_set("power_save_blocker") {
+static_library("power_save_blocker") {
   visibility = [
     # //remoting runs in a separate process which is outside of the context of
     # the ServiceManager-based world. Instead of embedding a Service Manager
