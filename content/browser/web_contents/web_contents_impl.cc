@@ -1769,6 +1769,12 @@ void WebContentsImpl::Init(const WebContents::CreateParams& params) {
   std::string unique_name;
   frame_tree_.root()->SetFrameName(params.main_frame_name, unique_name);
 
+  if (params.view && params.delegate_view) {
+    view_.reset(params.view);
+    render_view_host_delegate_view_ = params.delegate_view;
+  }
+
+  if (!view_) {
   WebContentsViewDelegate* delegate =
       GetContentClient()->browser()->GetWebContentsViewDelegate(this);
 
@@ -1779,6 +1785,7 @@ void WebContentsImpl::Init(const WebContents::CreateParams& params) {
     view_.reset(CreateWebContentsView(this, delegate,
                                       &render_view_host_delegate_view_));
   }
+  }  // !view_
 
   if (browser_plugin_guest_ && !GuestMode::IsCrossProcessFrameGuest(this)) {
     view_.reset(new WebContentsViewGuest(this, browser_plugin_guest_.get(),

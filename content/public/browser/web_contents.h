@@ -68,9 +68,12 @@ class InterstitialPage;
 class PageState;
 class RenderFrameHost;
 class RenderViewHost;
+class RenderViewHostDelegateView;
 class RenderWidgetHost;
 class RenderWidgetHostView;
+class RenderWidgetHostViewBase;
 class WebContentsDelegate;
+class WebContentsView;
 struct CustomContextMenuContext;
 struct DropData;
 struct Manifest;
@@ -170,6 +173,10 @@ class WebContents : public PageNavigator,
     // Note that the pre-created renderer process may not be used if the first
     // navigation requires a dedicated or privileged process, such as a WebUI.
     bool initialize_renderer;
+
+    // Optionally specify the view and delegate view.
+    content::WebContentsView* view = nullptr;
+    content::RenderViewHostDelegateView* delegate_view = nullptr;
   };
 
   // Creates a new WebContents.
