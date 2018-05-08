@@ -244,4 +244,8 @@ exec_script_whitelist =
       # Not gypi-to-gn.
       "//google_apis/BUILD.gn",
       "//printing/BUILD.gn",
+      # While electron transitions to GN, we use gypi_to_gn to synchronize
+      # file lists
+      "//electron/BUILD.gn",
+      "//electron/brightray/BUILD.gn",
     ]

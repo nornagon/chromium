@@ -553,10 +553,13 @@ config("compiler") {
       ldflags += [ "-Wl,--lto-O0" ]
     }
 
-    cflags += [ "-fwhole-program-vtables" ]
-    if (!is_win) {
-      ldflags += [ "-fwhole-program-vtables" ]
-    }
+    # -fwhole-program-vtables doesn't work well in Electron right now, as it's
+    # not a single binary and the optimizations break interfaces used across
+    # binary boundaries.
+    # cflags += [ "-fwhole-program-vtables" ]
+    # if (!is_win) {
+    #  ldflags += [ "-fwhole-program-vtables" ]
+    #}
 
     # Work-around for http://openradar.appspot.com/20356002
     if (is_mac) {

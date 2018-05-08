@@ -54,9 +54,11 @@ executable("crashpad_handler") {
   if (is_mac && is_component_build) {
     # The handler is in Chromium.app/Contents/Versions/X/Chromium Framework.framework/Versions/A/Helpers/
     # so set rpath up to the base.
+    # In Electron, the handler is in Electron.app/Contents/Resources/Electron Framework.framework/Versions/A/Resources/
+    # which is one less level of nesting.
     ldflags = [
       "-rpath",
-      "@loader_path/../../../../../../../..",
+      "@loader_path/../../../../../../..",
     ]
   }
 

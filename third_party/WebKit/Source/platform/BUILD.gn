@@ -136,6 +136,7 @@ action("instrumentation_probes") {
 }
 
 executable("character_data_generator") {
+  configs += [ "//libchromiumcontent/chromiumcontent/config:build_time_executable" ]
   sources = [
     "text/CharacterPropertyDataGenerator.cpp",
     "text/CharacterPropertyDataGenerator.h",

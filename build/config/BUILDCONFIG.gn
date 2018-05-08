@@ -123,6 +123,8 @@ if (current_os == "") {
 #   even if the value is overridden, which is wasteful. See first bullet.
 
 declare_args() {
+  is_electron_build = false
+
   # Set to enable the official build level of optimization. This has nothing
   # to do with branding, but enables an additional level of optimization above
   # release (!is_debug). This might be better expressed as a tri-state
@@ -529,6 +531,7 @@ default_compiler_configs = [
   "//build/config/compiler:runtime_library",
   "//build/config/coverage:default_coverage",
   "//build/config/sanitizers:default_sanitizer_flags",
+  "//libchromiumcontent/chromiumcontent/config:mas_build",
 ]
 if (is_win) {
   default_compiler_configs += [
@@ -651,6 +654,7 @@ template("component") {
     _component_mode = "shared_library"
   } else if (defined(invoker.static_component_type)) {
     assert(invoker.static_component_type == "static_library" ||
+           (is_electron_build && invoker.static_component_type == "shared_library") ||
            invoker.static_component_type == "source_set")
     _component_mode = invoker.static_component_type
   } else if (is_android || !defined(invoker.sources)) {
