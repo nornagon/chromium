@@ -221,8 +221,11 @@ void BrowserPluginGuest::Init() {
 
   WebContentsImpl* owner_web_contents = static_cast<WebContentsImpl*>(
       delegate_->GetOwnerWebContents());
-  owner_web_contents->CreateBrowserPluginEmbedderIfNecessary();
-  InitInternal(BrowserPluginHostMsg_Attach_Params(), owner_web_contents);
+  if (nullptr != owner_web_contents)
+  {
+      owner_web_contents->CreateBrowserPluginEmbedderIfNecessary();
+      InitInternal(BrowserPluginHostMsg_Attach_Params(), owner_web_contents);
+  }
 }
 
 base::WeakPtr<BrowserPluginGuest> BrowserPluginGuest::AsWeakPtr() {
