@@ -80,7 +80,8 @@ class GIN_EXPORT IsolateHolder {
   // V8Initializer::LoadV8Snapshot) before calling this method.
   static void Initialize(ScriptMode mode,
                          V8ExtrasMode v8_extras_mode,
-                         v8::ArrayBuffer::Allocator* allocator);
+                         v8::ArrayBuffer::Allocator* allocator,
+                         bool create_v8_platform = true);
 
   v8::Isolate* isolate() { return isolate_; }
 

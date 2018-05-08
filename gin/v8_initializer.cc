@@ -320,12 +320,14 @@ base::FilePath V8Initializer::GetSnapshotFilePath(bool abi_32_bit) {
 
 // static
 void V8Initializer::Initialize(IsolateHolder::ScriptMode mode,
-                               IsolateHolder::V8ExtrasMode v8_extras_mode) {
+                               IsolateHolder::V8ExtrasMode v8_extras_mode,
+                               bool create_v8_platform) {
   static bool v8_is_initialized = false;
   if (v8_is_initialized)
     return;
 
-  v8::V8::InitializePlatform(V8Platform::Get());
+  if (create_v8_platform)
+    v8::V8::InitializePlatform(V8Platform::Get());
 
   if (IsolateHolder::kStrictMode == mode) {
     static const char use_strict[] = "--use_strict";
