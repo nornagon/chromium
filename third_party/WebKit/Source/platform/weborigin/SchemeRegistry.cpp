@@ -224,6 +224,11 @@ bool SchemeRegistry::ShouldTreatURLSchemeAsCORSEnabled(const String& scheme) {
   return GetURLSchemesRegistry().cors_enabled_schemes.Contains(scheme);
 }
 
+void SchemeRegistry::RegisterURLSchemeAsCORSEnabled(const String& scheme) {
+  DCHECK_EQ(scheme, scheme.DeprecatedLower());
+  GetMutableURLSchemesRegistry().cors_enabled_schemes.insert(scheme);
+}
+
 String SchemeRegistry::ListOfCORSEnabledURLSchemes() {
   StringBuilder builder;
   bool add_separator = false;
