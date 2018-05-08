@@ -251,7 +251,6 @@ void WorkerScriptLoader::ProcessContentSecurityPolicy(
   // document (which is implemented in WorkerMessagingProxy, and
   // m_contentSecurityPolicy should be left as nullptr to inherit the policy).
   if (!response.Url().ProtocolIs("blob") &&
-      !response.Url().ProtocolIs("file") &&
       !response.Url().ProtocolIs("filesystem")) {
     content_security_policy_ = ContentSecurityPolicy::Create();
     content_security_policy_->SetOverrideURLForSelf(response.Url());
