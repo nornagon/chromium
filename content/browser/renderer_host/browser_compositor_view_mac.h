@@ -52,6 +52,7 @@ class CONTENT_EXPORT BrowserCompositorMac : public DelegatedFrameHostClient {
 
   // These will not return nullptr until Destroy is called.
   DelegatedFrameHost* GetDelegatedFrameHost();
+  ui::Layer* GetRootLayer() { return root_layer_.get(); }
 
   // Ensure that the currect compositor frame be cleared (even if it is
   // potentially visible).
@@ -59,6 +60,7 @@ class CONTENT_EXPORT BrowserCompositorMac : public DelegatedFrameHostClient {
 
   // This may return nullptr, if this has detached itself from its
   // ui::Compositor.
+  ui::Compositor* GetCompositor();
   ui::AcceleratedWidgetMac* GetAcceleratedWidgetMac();
 
   void DidCreateNewRendererCompositorFrameSink(

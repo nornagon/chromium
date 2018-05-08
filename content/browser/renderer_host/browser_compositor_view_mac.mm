@@ -209,6 +209,12 @@ BrowserCompositorMac::~BrowserCompositorMac() {
     g_spare_recyclable_compositors.Get().clear();
 }
 
+ui::Compositor* BrowserCompositorMac::GetCompositor() {
+  if (recyclable_compositor_)
+    return recyclable_compositor_->compositor();
+  return nullptr;
+}
+
 ui::AcceleratedWidgetMac* BrowserCompositorMac::GetAcceleratedWidgetMac() {
   if (recyclable_compositor_)
     return recyclable_compositor_->accelerated_widget_mac();
@@ -439,8 +445,13 @@ SkColor BrowserCompositorMac::DelegatedFrameHostGetGutterColor(
 }
 
 gfx::Size BrowserCompositorMac::DelegatedFrameHostDesiredSizeInDIP() const {
-  NSRect bounds = [client_->BrowserCompositorMacGetNSView() bounds];
-  return gfx::Size(bounds.size.width, bounds.size.height);
+  // View will be nil with CEF OSR.
+  NSView* view = client_->BrowserCompositorMacGetNSView();
+  if (view) {
+    NSRect bounds = [view bounds];
+    return gfx::Size(bounds.size.width, bounds.size.height);
+  }
+  return root_layer_->bounds().size();
 }
 
 bool BrowserCompositorMac::DelegatedFrameCanCreateResizeLock() const {
