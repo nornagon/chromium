@@ -409,6 +409,36 @@ viz::FrameSinkId RenderWidgetHostViewBase::FrameSinkIdAtPoint(
   return viz::FrameSinkId();
 }
 
+void RenderWidgetHostViewBase::ProcessKeyboardEvent(
+    const NativeWebKeyboardEvent& event,
+    const ui::LatencyInfo& latency) {
+  if (!GetRenderWidgetHost()) return;
+  GetRenderWidgetHost()->ForwardKeyboardEvent(event);
+}
+
+void RenderWidgetHostViewBase::ProcessMouseEvent(
+    const blink::WebMouseEvent& event,
+    const ui::LatencyInfo& latency) {
+  if (!GetRenderWidgetHost()) return;
+  GetRenderWidgetHost()->ForwardMouseEvent(event);
+}
+
+void RenderWidgetHostViewBase::ProcessMouseWheelEvent(
+    const blink::WebMouseWheelEvent& event,
+    const ui::LatencyInfo& latency) {
+  if (!GetRenderWidgetHost()) return;
+  GetRenderWidgetHost()->ForwardWheelEvent(event);
+}
+
+RenderWidgetHostViewBase* RenderWidgetHostViewBase::CreateViewForWidget(
+    RenderWidgetHost* render_widget_host,
+    RenderWidgetHost* embedder_render_widget_host,
+    WebContentsView* web_contents_view) {
+  return web_contents_view->CreateViewForWidget(
+    render_widget_host,
+    !!embedder_render_widget_host);
+}
+
 gfx::Point RenderWidgetHostViewBase::TransformPointToRootCoordSpace(
     const gfx::Point& point) {
   return point;
