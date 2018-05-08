@@ -3355,7 +3355,9 @@ bool Document::DispatchBeforeUnloadEvent(ChromeClient& chrome_client,
         "Blocked attempt to show a 'beforeunload' confirmation panel for a "
         "frame that never had a user gesture since its load. "
         "https://www.chromestatus.com/feature/5082396709879808"));
-    return true;
+    // TODO(alexeykuzmin): Uncomment `return true` when Electron tests are fixed.
+    // See https://github.com/electron/electron/issues/10754
+    // return true;
   }
 
   if (did_allow_navigation) {
