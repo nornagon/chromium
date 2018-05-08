@@ -10,6 +10,7 @@
 #include "content/public/common/resource_type.h"
 #include "net/base/host_port_pair.h"
 #include "net/cert/cert_status_flags.h"
+#include "net/http/http_response_headers.h"
 #include "net/url_request/url_request_status.h"
 #include "url/gurl.h"
 
@@ -41,6 +42,7 @@ struct ResourceRequestDetails {
   // HTTP response code. See HttpResponseHeaders::response_code().
   // -1 if there are no response headers yet.
   int http_response_code;
+  scoped_refptr<net::HttpResponseHeaders> headers;
 };
 
 // Details about a redirection of a resource request.

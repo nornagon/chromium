@@ -22,6 +22,10 @@ ResourceRequestDetails::ResourceRequestDetails(const net::URLRequest* request,
       has_certificate(has_certificate),
       ssl_cert_status(request->ssl_info().cert_status),
       socket_address(request->GetSocketAddress()) {
+  if (request->response_info().headers.get())
+    headers = new net::HttpResponseHeaders(
+        request->response_info().headers->raw_headers());
+
   const ResourceRequestInfo* info = ResourceRequestInfo::ForRequest(request);
   resource_type = info->GetResourceType();
   http_response_code =
