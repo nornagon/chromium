@@ -274,6 +274,13 @@ GpuProcessTransportFactory::~GpuProcessTransportFactory() {
 std::unique_ptr<viz::SoftwareOutputDevice>
 GpuProcessTransportFactory::CreateSoftwareOutputDevice(
     ui::Compositor* compositor) {
+  if (compositor->delegate()) {
+    std::unique_ptr<viz::SoftwareOutputDevice> output_device =
+      compositor->delegate()->CreateSoftwareOutputDevice(compositor);
+    if (output_device)
+      return output_device;
+  }
+
   base::CommandLine* command_line = base::CommandLine::ForCurrentProcess();
   if (command_line->HasSwitch(switches::kHeadless))
     return base::WrapUnique(new viz::SoftwareOutputDevice);
