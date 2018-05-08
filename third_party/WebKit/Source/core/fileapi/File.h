@@ -168,6 +168,9 @@ class CORE_EXPORT File final : public Blob {
   }
   const String& name() const { return name_; }
 
+  // Getter for the path IDL attribute.
+  const String& path() const { return GetPath(); }
+
   // Getter for the lastModified IDL attribute,
   // http://dev.w3.org/2006/webapi/FileAPI/#file-attrs
   long long lastModified() const;
