@@ -227,6 +227,8 @@ class VIEWS_EXPORT HWNDMessageHandler : public gfx::WindowImpl,
   typedef std::set<DWORD> TouchIDs;
   enum class DwmFrameState { OFF, ON };
 
+  bool HasNativeFrame();
+
   // Overridden from WindowImpl:
   HICON GetDefaultWindowIcon() const override;
   HICON GetSmallWindowIcon() const override;

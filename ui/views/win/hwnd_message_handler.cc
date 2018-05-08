@@ -305,6 +305,7 @@ class HWNDMessageHandler::ScopedRedrawLock {
         cancel_unlock_(false),
         should_lock_(owner_->IsVisible() && !owner->HasChildRenderingWindow() &&
                      ::IsWindow(hwnd_) &&
+                     !owner_->HasNativeFrame() &&
                      (!(GetWindowLong(hwnd_, GWL_STYLE) & WS_CAPTION) ||
                       !ui::win::IsAeroGlassEnabled())) {
     if (should_lock_)
@@ -903,6 +904,10 @@ bool HWNDMessageHandler::HasChildRenderingWindow() {
   // software rendering.
   return gfx::RenderingWindowManager::GetInstance()->HasValidChildWindow(
       hwnd());
+}
+
+bool HWNDMessageHandler::HasNativeFrame() {
+  return delegate_->HasNativeFrame();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
