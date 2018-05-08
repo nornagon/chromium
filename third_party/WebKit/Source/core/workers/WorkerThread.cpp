@@ -473,6 +473,12 @@ void WorkerThread::PrepareForShutdownOnWorkerThread() {
       SetExitCode(lock, ExitCode::kGracefullyTerminated);
   }
 
+  {
+    v8::HandleScope handle_scope(GetIsolate());
+    Platform::Current()->WorkerContextWillDestroy(
+        GlobalScope()->ScriptController()->GetContext());
+  }
+
   inspector_task_runner_->Kill();
   GetWorkerReportingProxy().WillDestroyWorkerGlobalScope();
   probe::AllAsyncTasksCanceled(GlobalScope());
