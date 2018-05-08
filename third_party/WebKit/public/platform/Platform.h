@@ -477,6 +477,7 @@ class BLINK_PLATFORM_EXPORT Platform {
   // GPU ----------------------------------------------------------------
   //
   struct ContextAttributes {
+    bool prefer_integrated_gpu = false;
     bool fail_if_major_performance_caveat = false;
     unsigned web_gl_version = 0;
     // Offscreen contexts usually share a surface for the default frame buffer

@@ -17,6 +17,7 @@ WebGLContextAttributes ToWebGLContextAttributes(
   result.setAntialias(attrs.antialias());
   result.setPremultipliedAlpha(attrs.premultipliedAlpha());
   result.setPreserveDrawingBuffer(attrs.preserveDrawingBuffer());
+  result.setPowerPreference(attrs.powerPreference());
   result.setFailIfMajorPerformanceCaveat(attrs.failIfMajorPerformanceCaveat());
   return result;
 }
@@ -26,6 +27,7 @@ Platform::ContextAttributes ToPlatformContextAttributes(
     unsigned web_gl_version,
     bool support_own_offscreen_surface) {
   Platform::ContextAttributes result;
+  result.prefer_integrated_gpu = attrs.powerPreference() == "low-power";
   result.fail_if_major_performance_caveat =
       attrs.failIfMajorPerformanceCaveat();
   result.web_gl_version = web_gl_version;

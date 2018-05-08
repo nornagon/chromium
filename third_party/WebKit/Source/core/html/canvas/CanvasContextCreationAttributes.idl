@@ -34,6 +34,12 @@ enum CanvasPixelFormat {
     "float16",
 };
 
+enum CanvasPowerPreference {
+    "default",
+    "low-power",
+    "high-performance",
+};
+
 [PermissiveDictionaryConversion]
 dictionary CanvasContextCreationAttributes {
     // Canvas 2D attributes
@@ -50,5 +56,6 @@ dictionary CanvasContextCreationAttributes {
     boolean antialias = true;
     boolean premultipliedAlpha = true;
     boolean preserveDrawingBuffer = false;
+    CanvasPowerPreference powerPreference = "default";
     boolean failIfMajorPerformanceCaveat = false;
 };

@@ -1081,9 +1081,9 @@ RendererBlinkPlatformImpl::CreateOffscreenGraphicsContext3DProvider(
       web_attributes.support_stencil || web_attributes.support_antialias;
   attributes.sample_buffers = 0;
   attributes.bind_generates_resource = false;
-  // Prefer discrete GPU for WebGL.
-  attributes.gpu_preference = gl::PreferDiscreteGpu;
-
+  attributes.gpu_preference = web_attributes.prefer_integrated_gpu
+      ? gl::PreferIntegratedGpu
+      : gl::PreferDiscreteGpu;
   attributes.fail_if_major_perf_caveat =
       web_attributes.fail_if_major_performance_caveat;
   DCHECK_GT(web_attributes.web_gl_version, 0u);
