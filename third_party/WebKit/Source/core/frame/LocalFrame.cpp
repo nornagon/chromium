@@ -305,10 +305,6 @@ void LocalFrame::Detach(FrameDetachType type) {
   }
   CHECK(!view_ || !view_->IsAttached());
 
-  // This is the earliest that scripting can be disabled:
-  // - FrameLoader::Detach() can fire XHR abort events
-  // - Document::Shutdown() can dispose plugins which can run script.
-  ScriptForbiddenScope forbid_script;
   if (!Client())
     return;
 
@@ -318,6 +314,10 @@ void LocalFrame::Detach(FrameDetachType type) {
   // Notify ScriptController that the frame is closing, since its cleanup ends
   // up calling back to LocalFrameClient via WindowProxy.
   GetScriptController().ClearForClose();
+  // This is the earliest that scripting can be disabled:
+  // - FrameLoader::Detach() can fire XHR abort events
+  // - Document::Shutdown() can dispose plugins which can run script.
+  ScriptForbiddenScope forbid_script;
 
   // TODO(crbug.com/729196): Trace why LocalFrameView::DetachFromLayout crashes.
   CHECK(!view_->IsAttached());
