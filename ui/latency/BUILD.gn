@@ -4,19 +4,22 @@
 
 import("//testing/test.gni")
 
-source_set("latency") {
+component("latency") {
   sources = [
     "latency_histogram_macros.h",
     "latency_info.cc",
     "latency_info.h",
     "latency_tracker.cc",
     "latency_tracker.h",
+    "ui_latency_export.h",
   ]
 
   deps = [
     "//base",
     "//ui/gfx",
   ]
+
+  defines = [ "UI_LATENCY_IMPLEMENTATION" ]
 }
 
 source_set("test_support") {

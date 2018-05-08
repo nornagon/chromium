@@ -15,6 +15,7 @@
 #include "base/containers/flat_map.h"
 #include "base/time/time.h"
 #include "ui/gfx/geometry/point_f.h"
+#include "ui/latency/ui_latency_export.h"
 
 #if !defined(OS_IOS)
 #include "ipc/ipc_param_traits.h"  // nogncheck
@@ -114,7 +115,7 @@ enum SourceEventType {
   SOURCE_EVENT_TYPE_LAST = OTHER,
 };
 
-class LatencyInfo {
+class UI_LATENCY_EXPORT LatencyInfo {
  public:
   struct LatencyComponent {
     // Nondecreasing number that can be used to determine what events happened

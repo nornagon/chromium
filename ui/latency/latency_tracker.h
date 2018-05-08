@@ -7,12 +7,13 @@
 
 #include "base/macros.h"
 #include "ui/latency/latency_info.h"
+#include "ui/latency/ui_latency_export.h"
 
 namespace ui {
 
 // Utility class for tracking the latency of events. Relies on LatencyInfo
 // components logged by content::RenderWidgetHostLatencyTracker.
-class LatencyTracker {
+class UI_LATENCY_EXPORT LatencyTracker {
  public:
   LatencyTracker() = default;
   ~LatencyTracker() = default;
