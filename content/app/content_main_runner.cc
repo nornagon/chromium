@@ -636,7 +636,7 @@ class ContentMainRunnerImpl : public ContentMainRunner {
 
     InitializeV8IfNeeded(command_line, process_type);
 
-#if !defined(OFFICIAL_BUILD)
+#if 0
 #if defined(OS_WIN)
     bool should_enable_stack_dump = !process_type.empty();
 #else
