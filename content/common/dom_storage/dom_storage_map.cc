@@ -182,10 +182,12 @@ bool DOMStorageMap::SetItemInternal(MapType* map_type,
   size_t new_item_size = size_in_storage(key, value);
   size_t new_storage_used = storage_used_ - old_item_size + new_item_size;
 
+#if 0  // Disable localStorage size limit for Electron.
   // Only check quota if the size is increasing, this allows
   // shrinking changes to pre-existing files that are over budget.
   if (new_item_size > old_item_size && new_storage_used > quota_)
     return false;
+#endif
 
   (*map_type)[key] = value;
   ResetKeyIterator();
