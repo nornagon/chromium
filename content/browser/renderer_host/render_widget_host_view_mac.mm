@@ -2126,8 +2126,8 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged(
   if (EventIsReservedBySystem(theEvent))
     return;
 
-  DCHECK([theEvent type] != NSKeyDown ||
-         !equiv == !([theEvent modifierFlags] & NSCommandKeyMask));
+  //DCHECK([theEvent type] != NSKeyDown ||
+  //       !equiv == !([theEvent modifierFlags] & NSCommandKeyMask));
 
   if ([theEvent type] == NSFlagsChanged) {
     // Ignore NSFlagsChanged events from the NumLock and Fn keys as

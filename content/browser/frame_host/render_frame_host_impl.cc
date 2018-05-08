@@ -2110,8 +2110,10 @@ void RenderFrameHostImpl::AllowBindings(int bindings_flags) {
   }
 
   enabled_bindings_ |= bindings_flags;
-  if (GetParent())
-    DCHECK_EQ(GetParent()->GetEnabledBindings(), GetEnabledBindings());
+  // WebUI in sub frames require binding policy while the parent does not,
+  // Fix this when we use OOPIF in Electron.
+  // if (GetParent())
+  //  DCHECK_EQ(GetParent()->GetEnabledBindings(), GetEnabledBindings());
 
   if (render_frame_created_) {
     if (!frame_bindings_control_)

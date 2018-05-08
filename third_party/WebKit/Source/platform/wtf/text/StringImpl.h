@@ -254,21 +254,21 @@ class WTF_EXPORT StringImpl {
   }
 
   ALWAYS_INLINE bool HasOneRef() const {
-#if DCHECK_IS_ON()
+#if 0
     DCHECK(IsStatic() || verifier_.IsSafeToUse()) << AsciiForDebugging();
 #endif
     return ref_count_ == 1;
   }
 
   ALWAYS_INLINE void AddRef() const {
-#if DCHECK_IS_ON()
+#if 0
     DCHECK(IsStatic() || verifier_.OnRef(ref_count_)) << AsciiForDebugging();
 #endif
     ++ref_count_;
   }
 
   ALWAYS_INLINE void Release() const {
-#if DCHECK_IS_ON()
+#if 0
     DCHECK(IsStatic() || verifier_.OnDeref(ref_count_))
         << AsciiForDebugging() << " " << CurrentThread();
 #endif

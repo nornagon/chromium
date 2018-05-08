@@ -96,6 +96,10 @@ component("url") {
     ]
     deps += [ "//third_party/icu" ]
   }
+
+  if (is_electron_build) {
+    defines += [ "ELECTRON_NO_DCHECK" ]
+  }
 }
 
 if (is_android) {

@@ -416,7 +416,7 @@ class VIZ_SERVICE_EXPORT Program : public ProgramBindingBase {
     if (!ProgramBindingBase::Init(context_provider->ContextGL(),
                                   vertex_shader_.GetShaderString(),
                                   fragment_shader_.GetShaderString())) {
-      DCHECK(IsContextLost(context_provider->ContextGL()));
+      // DCHECK(IsContextLost(context_provider->ContextGL()));
       return;
     }
 
@@ -428,7 +428,7 @@ class VIZ_SERVICE_EXPORT Program : public ProgramBindingBase {
 
     // Link after binding uniforms
     if (!Link(context_provider->ContextGL())) {
-      DCHECK(IsContextLost(context_provider->ContextGL()));
+      // DCHECK(IsContextLost(context_provider->ContextGL()));
       return;
     }
 

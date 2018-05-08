@@ -853,7 +853,7 @@ const LogSeverity LOG_DCHECK = LOG_FATAL;
 
 #else  // !(defined(_PREFAST_) && defined(OS_WIN))
 
-#if DCHECK_IS_ON()
+#if DCHECK_IS_ON() && !defined(ELECTRON_NO_DCHECK)
 
 #define DCHECK(condition)                                           \
   LAZY_STREAM(LOG_STREAM(DCHECK), !ANALYZER_ASSUME_TRUE(condition)) \

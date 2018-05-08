@@ -136,4 +136,11 @@ blink_core_sources("loader") {
   public_deps = [
     "//third_party/WebKit/Source/platform",
   ]
+
+  if (is_electron_build) {
+    if (!defined(defines)) {
+      defines = []
+    }
+    defines += [ "ELECTRON_NO_DCHECK" ]
+  }
 }

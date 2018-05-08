@@ -240,7 +240,7 @@ void PpapiHost::OnHostMsgResourceCreated(
       CreateResourceHost(params.pp_resource(), instance, nested_msg);
 
   if (!resource_host.get()) {
-    NOTREACHED();
+    // NOTREACHED();
     return;
   }
 

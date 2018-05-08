@@ -45,7 +45,7 @@ TerminationStatus GetTerminationStatus(ProcessHandle handle, int* exit_code) {
   DWORD tmp_exit_code = 0;
 
   if (!::GetExitCodeProcess(handle, &tmp_exit_code)) {
-    DPLOG(FATAL) << "GetExitCodeProcess() failed";
+    // DPLOG(FATAL) << "GetExitCodeProcess() failed";
 
     // This really is a random number.  We haven't received any
     // information about the exit code, presumably because this

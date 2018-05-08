@@ -2459,7 +2459,7 @@ StaticNodeList* Node::getDestinationInsertionPoints() {
 
 HTMLSlotElement* Node::AssignedSlot() const {
   // assignedSlot doesn't need to call updateDistribution().
-  DCHECK(!IsPseudoElement());
+  // DCHECK(!IsPseudoElement());
   if (ShadowRoot* root = V1ShadowRootOfParent())
     return root->AssignedSlotFor(*this);
   return nullptr;
