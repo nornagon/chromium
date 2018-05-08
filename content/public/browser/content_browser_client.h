@@ -164,6 +164,15 @@ class CONTENT_EXPORT ContentBrowserClient {
  public:
   virtual ~ContentBrowserClient() {}
 
+  // Electron: Allows overriding the SiteInstance when navigating.
+  virtual void OverrideSiteInstanceForNavigation(
+      RenderFrameHost* render_frame_host,
+      BrowserContext* browser_context,
+      const GURL& dest_url,
+      bool has_response_started,
+      SiteInstance* candidate_site_instance,
+      SiteInstance** new_instance) {}
+
   // Allows the embedder to set any number of custom BrowserMainParts
   // implementations for the browser startup code. See comments in
   // browser_main_parts.h.

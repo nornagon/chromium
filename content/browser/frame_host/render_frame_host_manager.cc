@@ -1996,6 +1996,18 @@ RenderFrameHostManager::GetSiteInstanceForNavigationRequest(
   bool was_server_redirect = request.navigation_handle() &&
                              request.navigation_handle()->WasServerRedirect();
 
+  BrowserContext* browser_context =
+      delegate_->GetControllerForRenderManager().GetBrowserContext();
+  // If the navigation can swap SiteInstances, compute the SiteInstance it
+  // should use.
+  // TODO(clamy): We should also consider as a candidate SiteInstance the
+  // speculative SiteInstance that was computed on redirects.
+  scoped_refptr<SiteInstance> candidate_site_instance =
+      speculative_render_frame_host_
+          ? speculative_render_frame_host_->GetSiteInstance()
+          : content::SiteInstance::CreateForURL(browser_context,
+                                                request.common_params().url);
+
   if (frame_tree_node_->IsMainFrame()) {
     // Renderer-initiated main frame navigations that may require a
     // SiteInstance swap are sent to the browser via the OpenURL IPC and are
@@ -2012,6 +2024,19 @@ RenderFrameHostManager::GetSiteInstanceForNavigationRequest(
 
     no_renderer_swap_allowed |=
         request.from_begin_navigation() && !can_renderer_initiate_transfer;
+
+    bool has_response_started =
+        (request.state() == NavigationRequest::RESPONSE_STARTED ||
+         request.state() == NavigationRequest::FAILED) &&
+        !speculative_render_frame_host_;
+    // Gives user a chance to choose a custom site instance.
+    SiteInstance* client_custom_instance = nullptr;
+    GetContentClient()->browser()->OverrideSiteInstanceForNavigation(
+        render_frame_host_.get(), browser_context, request.common_params().url,
+        has_response_started, candidate_site_instance.get(),
+        &client_custom_instance);
+    if (client_custom_instance)
+      return scoped_refptr<SiteInstance>(client_custom_instance);
   } else {
     // Subframe navigations will use the current renderer, unless specifically
     // allowed to swap processes.
@@ -2023,18 +2048,9 @@ RenderFrameHostManager::GetSiteInstanceForNavigationRequest(
   if (no_renderer_swap_allowed)
     return scoped_refptr<SiteInstance>(current_site_instance);
 
-  // If the navigation can swap SiteInstances, compute the SiteInstance it
-  // should use.
-  // TODO(clamy): We should also consider as a candidate SiteInstance the
-  // speculative SiteInstance that was computed on redirects.
-  SiteInstance* candidate_site_instance =
-      speculative_render_frame_host_
-          ? speculative_render_frame_host_->GetSiteInstance()
-          : nullptr;
-
   scoped_refptr<SiteInstance> dest_site_instance = GetSiteInstanceForNavigation(
       request.common_params().url, request.source_site_instance(),
-      request.dest_site_instance(), candidate_site_instance,
+      request.dest_site_instance(), candidate_site_instance.get(),
       request.common_params().transition,
       request.restore_type() != RestoreType::NONE, request.is_view_source(),
       was_server_redirect);
