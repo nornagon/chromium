@@ -5,6 +5,8 @@
 module content.mojom;
 
 import "content/public/common/window_container_type.mojom";
+import "mojo/common/file_path.mojom";
+import "mojo/common/time.mojom";
 import "services/service_manager/public/interfaces/interface_provider.mojom";
 import "third_party/WebKit/public/platform/referrer.mojom";
 import "third_party/WebKit/public/web/window_features.mojom";
@@ -41,6 +43,24 @@ interface FrameFactory {
   CreateFrame(int32 frame_routing_id, Frame& frame, FrameHostInterfaceBroker host);
 };
 
+struct DataElement {
+  int32 type;
+  int64 length;
+  string bytes;
+  mojo.common.mojom.FilePath path;
+  int64 offset;
+  mojo.common.mojom.Time expected_modification_time;
+  url.mojom.Url filesystem_url;
+  string blob_uuid;
+};
+
+struct ResourceRequestBody {
+  bool has_object;
+  int64 identifier;
+  bool contains_sensitive_info;
+  array<DataElement> elements;
+};
+
 struct CreateNewWindowParams {
   // True if this open request came in the context of a user gesture.
   bool user_gesture;
@@ -72,6 +92,10 @@ struct CreateNewWindowParams {
 
   // The window features to use for the new window.
   blink.mojom.WindowFeatures features;
+
+  // Extra fields added by Electron.
+  array<string> additional_features;
+  ResourceRequestBody body;
 };
 
 struct CreateNewWindowReply {

@@ -45,6 +45,7 @@
 #include "content/child/appcache/web_application_cache_host_impl.h"
 #include "content/child/request_extra_data.h"
 #include "content/child/v8_value_converter_impl.h"
+#include "content/child/web_url_request_util.h"
 #include "content/common/content_constants_internal.h"
 #include "content/common/content_switches_internal.h"
 #include "content/common/dom_storage/dom_storage_types.h"
@@ -1346,6 +1347,59 @@ WebView* RenderViewImpl::CreateView(WebLocalFrame* creator,
     params->referrer = GetReferrerFromRequest(creator, request);
   }
   params->features = ConvertWebWindowFeaturesToMojoWindowFeatures(features);
+
+  params->body = mojom::ResourceRequestBody::New();
+  auto body = GetRequestBodyForWebURLRequest(request);
+  if (body) {
+    params->body->has_object = true;
+    params->body->identifier = body->identifier();
+    params->body->contains_sensitive_info = body->contains_sensitive_info();
+    for (const auto& element : *body->elements()) {
+      content::mojom::DataElementPtr ptr = content::mojom::DataElement::New();
+      ptr->type = element.type();
+      switch (element.type()) {
+        case storage::DataElement::TYPE_BYTES: {
+          ptr->bytes = std::string(element.bytes(), element.length());
+          break;
+        }
+        case storage::DataElement::TYPE_BYTES_DESCRIPTION: {
+          ptr->length = element.length();
+          break;
+        }
+        case storage::DataElement::TYPE_FILE: {
+          ptr->path = element.path();
+          ptr->offset = element.offset();
+          ptr->length = element.length();
+          ptr->expected_modification_time = element.expected_modification_time();
+          break;
+        }
+        case storage::DataElement::TYPE_FILE_FILESYSTEM: {
+          ptr->filesystem_url = element.filesystem_url();
+          ptr->offset = element.offset();
+          ptr->length = element.length();
+          ptr->expected_modification_time = element.expected_modification_time();
+          break;
+        }
+        case storage::DataElement::TYPE_BLOB: {
+          ptr->blob_uuid = element.blob_uuid();
+          ptr->offset = element.offset();
+          ptr->length = element.length();
+          break;
+        }
+        case storage::DataElement::TYPE_DISK_CACHE_ENTRY: {
+          NOTREACHED() << "Can't be sent by IPC.";
+          break;
+        }
+        case storage::DataElement::TYPE_UNKNOWN: {
+          NOTREACHED();
+          break;
+        }
+      }
+      params->body->elements.push_back(std::move(ptr));
+    }
+  } else {
+    params->body->has_object = false;
+  }
 
   // We preserve this information before sending the message since |params| is
   // moved on send.

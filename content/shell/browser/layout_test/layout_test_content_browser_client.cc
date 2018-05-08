@@ -182,6 +182,8 @@ bool LayoutTestContentBrowserClient::CanCreateWindow(
     const std::string& frame_name,
     WindowOpenDisposition disposition,
     const blink::mojom::WindowFeatures& features,
+    const std::vector<std::string>& additional_features,
+    const scoped_refptr<ResourceRequestBody>& body,
     bool user_gesture,
     bool opener_suppressed,
     bool* no_javascript_access) {

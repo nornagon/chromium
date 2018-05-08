@@ -2748,6 +2748,48 @@ void RenderFrameHostImpl::CreateNewWindow(
                "frame_tree_node", frame_tree_node_->frame_tree_node_id(), "url",
                params->target_url.possibly_invalid_spec());
 
+  scoped_refptr<ResourceRequestBody> body;
+  if (params->body->has_object) {
+    body = new ResourceRequestBody;
+    std::vector<storage::DataElement> elements;
+    for (const auto& iter : params->body->elements) {
+      storage::DataElement element;
+      switch (iter->type) {
+        case storage::DataElement::TYPE_BYTES: {
+          element.SetToBytes(iter->bytes.data(), iter->bytes.length());
+          break;
+        }
+        case storage::DataElement::TYPE_BYTES_DESCRIPTION: {
+          element.SetToBytesDescription(iter->length);
+          break;
+        }
+        case storage::DataElement::TYPE_FILE: {
+          element.SetToFilePathRange(iter->path, iter->offset, iter->length,
+                                     iter->expected_modification_time);
+          break;
+        }
+        case storage::DataElement::TYPE_FILE_FILESYSTEM: {
+          element.SetToFileSystemUrlRange(iter->filesystem_url,
+                                          iter->offset, iter->length,
+                                          iter->expected_modification_time);
+          break;
+        }
+        case storage::DataElement::TYPE_BLOB: {
+          element.SetToBlobRange(iter->blob_uuid, iter->offset, iter->length);
+          break;
+        }
+        default: {
+          NOTREACHED();
+          break;
+        }
+      }
+      elements.push_back(std::move(element));
+    }
+    body->swap_elements(&elements);
+    body->set_identifier(params->body->identifier);
+    body->set_contains_sensitive_info(params->body->contains_sensitive_info);
+  }
+
   bool no_javascript_access = false;
 
   // Filter out URLs that this process cannot request.
@@ -2761,8 +2803,9 @@ void RenderFrameHostImpl::CreateNewWindow(
           frame_tree_node_->frame_tree()->GetMainFrame()->last_committed_url(),
           last_committed_origin_.GetURL(), params->window_container_type,
           params->target_url, params->referrer, params->frame_name,
-          params->disposition, *params->features, params->user_gesture,
-          params->opener_suppressed, &no_javascript_access);
+          params->disposition, *params->features, params->additional_features,
+          body, params->user_gesture, params->opener_suppressed,
+          &no_javascript_access);
 
   mojom::CreateNewWindowReplyPtr reply = mojom::CreateNewWindowReply::New();
   if (!can_create_window) {
