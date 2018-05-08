@@ -184,7 +184,7 @@ struct BASE_EXPORT LaunchOptions {
 
   // By default, child processes will have the PR_SET_NO_NEW_PRIVS bit set. If
   // true, then this bit will not be set in the new child process.
-  bool allow_new_privs = false;
+  bool allow_new_privs = true;
 
   // Sets parent process death signal to SIGKILL.
   bool kill_on_parent_death = false;
