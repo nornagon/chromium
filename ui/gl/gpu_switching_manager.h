@@ -18,6 +18,9 @@ class GL_EXPORT GpuSwitchingManager {
   // Getter for the singleton. This will return NULL on failure.
   static GpuSwitchingManager* GetInstance();
 
+  static void SetTransparent(bool transparent);
+  static bool UseTransparent();
+
   void AddObserver(GpuSwitchingObserver* observer);
   void RemoveObserver(GpuSwitchingObserver* observer);
 

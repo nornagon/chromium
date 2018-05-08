@@ -4,11 +4,27 @@
 
 #include "ui/gl/gpu_switching_manager.h"
 
+namespace {
+
+bool g_use_transparent = false;
+
+}  // namespace
+
 namespace ui {
 
 // static
 GpuSwitchingManager* GpuSwitchingManager::GetInstance() {
   return base::Singleton<GpuSwitchingManager>::get();
+}
+
+// static
+void GpuSwitchingManager::SetTransparent(bool transparent) {
+  g_use_transparent = transparent;
+}
+
+// static
+bool GpuSwitchingManager::UseTransparent() {
+  return g_use_transparent;
 }
 
 GpuSwitchingManager::GpuSwitchingManager() {}
