@@ -934,6 +934,11 @@ bool RenderWidgetHostImpl::CanPauseForPendingResizeOrRepaints() {
   if (is_hidden())
     return false;
 
+  // Do not pause if there is already a pending operation with the
+  // backing store.
+  if (in_get_backing_store_)
+    return false;
+
   // Do not pause if there is not a paint or resize already coming.
   if (!repaint_ack_pending_ && !resize_ack_pending_)
     return false;
