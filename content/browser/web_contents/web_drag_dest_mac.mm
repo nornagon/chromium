@@ -348,6 +348,7 @@ GetRenderWidgetHostAtPoint:(const NSPoint&)viewPoint
 }
 
 - (bool)isValidDragTarget:(content::RenderWidgetHostImpl*)targetRWH {
+  return YES;
   return targetRWH->GetProcess()->GetID() == dragStartProcessID_ ||
          GetRenderViewHostID(webContents_->GetRenderViewHost()) !=
              dragStartViewID_;
