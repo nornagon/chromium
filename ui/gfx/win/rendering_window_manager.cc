@@ -49,6 +49,7 @@ void RenderingWindowManager::DoSetParentOnChild(HWND parent) {
   }
 
   ::SetParent(child, parent);
+  ::SetWindowPos(child, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
 void RenderingWindowManager::UnregisterParent(HWND parent) {

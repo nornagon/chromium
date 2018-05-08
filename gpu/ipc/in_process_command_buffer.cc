@@ -1048,6 +1048,8 @@ void InProcessCommandBuffer::DidCreateAcceleratedSurfaceChildWindow(
     SurfaceHandle parent_window,
     SurfaceHandle child_window) {
   ::SetParent(child_window, parent_window);
+  ::SetWindowPos(child_window, HWND_BOTTOM, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE);
 }
 #endif
 
