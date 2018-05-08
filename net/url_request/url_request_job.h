@@ -283,6 +283,7 @@ class NET_EXPORT URLRequestJob : public base::PowerObserver {
   void OnCallToDelegate();
   void OnCallToDelegateComplete();
 
+ public:
   // Called to read raw (pre-filtered) data from this Job. Reads at most
   // |buf_size| bytes into |buf|.
   // Possible return values:
